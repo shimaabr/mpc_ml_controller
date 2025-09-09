@@ -18,10 +18,30 @@ mpc controller adv:
  it need poweful fast processor with a large memory cause solve an online optimization problem at each time .
  #theory of MPC 
  if descriminate dynamic system is 
+
+
  x(k+1)=Ax(k)+Bu(k)                                                            
   y(k+1)=Cx(k)+Du(k)
+ 
+  
   x is state space and y is output of system 
-  The goal is to implement signal control [u1 u2 ...un] that have pest performance and have less effort so we define a cost function: 
+  The goal is to implement signal control [u1 u2 ...un] that have best performance and have less effort so we define a cost function: 
+
+  
+![formula](https://latex.codecogs.com/svg.latex?\color{white}J_{(0-N)}=x_N^TPx_N+\sum_{k=0}^{N-1}(x_k^TQx_k+u_k^TRu_k))
+
+
+weight Q is for having less effort and P for best performance 
+
+cause the cost function is quadratic so it is convexx so it has definite minimum
+
+
+# find model for mpc (L-1011)
+i use complib library to find matrix of state space of my system 
+
+complib has more than 120 example of real system which is linearized and is LTI 
+
+i use Ac3 which is define for 
    
   
 
