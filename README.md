@@ -41,12 +41,43 @@ i use complib library to find matrix of state space of my system
 
 complib has more than 120 example of real system which is linearized and is LTI 
 
-i use Ac3 which is define for 
+I use Ac3 which is defined for a lateral axis model of L-1011 aircraft in cruise flight condition present by C.Edwards and S.K.Spurgeon .
+We can extract A B C matrix from complib.
+in this modle x y and u represent for 
+
+state:
+
+x=[
+    phi=Bank angle;
+    r=yaw rate;
+    p= roll rate;
+    beta=sideslip angle;
+    w=washed out filter state;
+    ]
+
+input:
+
+u=[
+    delta_r=rudder defelection;
+    delta_a=aileron defelection;
+    ]
+
+output:
+
+y=[
+   r-wo=washed out yaw rate;
+   p= roll rate;
+   beta=sideslip angle;
+   phi=Bank angle]
+
+
+   https://ntrs.nasa.gov/api/citations/19900007452/downloads/19900007452.pdf   
+   https://contrails.library.iit.edu/files/original/253c069aca0f1971c8e1b708576252f2c75363ef.pdf  
    
-  
+
+    
 
 
----
 
 ## 📂 Project Structure
 - `src/` → MATLAB source code  
