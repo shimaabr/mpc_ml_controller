@@ -1,4 +1,4 @@
-# ✈️ Aircraft MPC Controller (MATLAB & Simulink)
+#  Aircraft MPC Controller (MATLAB & Simulink)
 
 This project implements an MPC controller for the **L-1011 aircraft** using **YALMIP** (optimization toolbox) and **Simulink**.  
 - The system results are observed using scopes.  
@@ -9,7 +9,7 @@ Ultimately, the MPC controller is compared with an **LQR controller**.
 
 ---
 
-## 📖 MPC Controller
+##  MPC Controller
 Model Predictive Control (MPC) is a feedback control algorithm that uses a model to predict future outputs of the process and solves an optimization problem to select the optimal control.
 
 **Advantages of MPC:**  
@@ -22,7 +22,7 @@ Model Predictive Control (MPC) is a feedback control algorithm that uses a model
 
 ---
 
-## 📐 Theory of MPC
+##  Theory of MPC
 For a discrete-time dynamic system:
 
 
@@ -47,7 +47,7 @@ Because the cost function is quadratic, it is convex, so it has a unique global 
 
 ---
 
-## 🔧 Find Model for MPC (L-1011)
+##  Find Model for MPC (L-1011)
 
 I use the [**COMPLIB library**](http://www.complib.de/) to find the state-space matrices of my system.  
 
