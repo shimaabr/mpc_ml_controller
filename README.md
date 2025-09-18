@@ -260,7 +260,7 @@ $ISU = \sum_{k=0}^{N} u^2(k)$
 
 
 
-Finally, in the **subsystem block**, I compute the **cost function** using `Q`, `R`, the error, and the control signal according to:
+Finally, in the **subsystem block**, I compute the  integrate of ** cost function** using `Q`, `R`, the error, and the control signal according to:
 
 ![Cost](https://latex.codecogs.com/svg.latex?\color{white}J_{(0-N)}=x_N^TPx_N+\sum_{k=0}^{N-1}(x_k^TQx_k+u_k^TRu_k))
 <img width="1085" height="428" alt="image" src="https://github.com/user-attachments/assets/5937ce01-c8a0-4840-a700-b7101376e85b" />
@@ -290,8 +290,8 @@ cost function and error  gradually reduce which show mpc controller done well
 
 Sensitivity to Q
 --
-changes value of Q while other parameters steady in R=.1 U=delta_a_max = 2;% 0.262 rad
-delta_r_max = 2;% 0.524 rad and N=1
+I change value of Q keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
+delta_r_max = 2;% 0.524 rad and N=10
 
 <img width="653" height="594" alt="image" src="https://github.com/user-attachments/assets/1f7ffcde-9220-4776-8336-9c3ddb2d1232" />
 
@@ -303,9 +303,12 @@ the tracking error is smaller
 
 more aggressive control actions
 
-for better evaluation i make a table to find how error(ISE) and controlsignal (ISU) and cost function change due to changing Q
 
-| R   | Q     | Cost function | ISE     | ISU   |
+For a better evaluation, the following table shows how the error (ISE), control signal (ISU), and cost function change as Q varies:
+
+Table1:sebsitivity to Q 
+
+| R   | Q     | integrated Cost  | ISE     | ISU   |
 |-----|-------|---------------|---------|-------|
 | 0.1 | 0.01  | 1.464         | 142.400 | 0.3998 |
 | 0.1 | 0.025 | 2.669         | 101.092 | 1.417  |
@@ -318,11 +321,12 @@ for better evaluation i make a table to find how error(ISE) and controlsignal (I
 | 0.1 | 10    | 781.200       | 78.082  | 3.419  |
 | 0.1 | 100   | 7809.000      | 78.082  | 3.421  |
 
+The table illustrates that increasing Q while keeping other parameters constant results in a significant decrease in ISE, which is beneficial for the controller’s performance. However, after Q ≈ 0.1, further increases in Q have only a minor effect on reducing ISE, while the cost function and ISU rise sharply. Therefore, the optimal value of Q for this model would be around 0.075–0.1.
 
 sensitivity to R
 --
-changes value of Q while other parameters steady in Q=.1 U=delta_a_max = 2;% 0.262 rad
-delta_r_max = 2;% 0.524 rad and N=1
+I changes value of Q keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
+delta_r_max = 2;% 0.524 rad and N=10
 
 <img width="652" height="642" alt="image" src="https://github.com/user-attachments/assets/e509fbaf-7416-48be-afa1-3ca42383f685" />
 
@@ -330,12 +334,13 @@ Increasing R (opposite of Q):
 
 The control inputs change more smoothly and conservatively.
 
-Control effort (or actuator usage) is reduced.
+control signal is smoother.
 
 Tracking accuracy decreases
 
+Table2:sebsitivity to R
 
-| R    | Q   | Cost function | ISE      | ISU    |
+| R    | Q   | integrated Cost  | ISE      | ISU    |
 |------|-----|---------------|----------|--------|
 | 0.01 | 0.1 | 7.850         | 78.1644  | 3.371  |
 | 0.05 | 0.1 | 7.996         | 78.3600  | 3.199  |
@@ -348,7 +353,11 @@ Tracking accuracy decreases
 | 1    | 0.1 | 14.640        | 142.411  | 0.3998 |
 | 10   | 0.1 | 20.210        | 201.571  | 0.0052 |
 
-to compare the effect of them better i plot the cost function ISE and ISU according to R and Q in matlab you can find the code in 
+The table illustrates that increasing R while keeping other parameters constant results in a significant increase in ISE, which may have bad effect on the controller’s performance. On the other hand, the control effort decreases and becomes smoother, while the cost function increases. Therefore, it is preferable to choose the largest R that still maintains an acceptable ISE, which for this model would be around R ≈ 0.1.
+
+plot the effect of weights
+--
+To better compare the effects of Q and R, the cost function, ISE, and ISU were plotted against R and Q in MATLAB. The code can be found at  .
 
 ```matlab
 R = [.01,.05,.1,.15,.18,.2,.25,.5,1,10]
@@ -429,6 +438,8 @@ xlabel('Q'); ylabel('ISU'); grid on; title('ISU (all)');
 
 <img width="559" height="419" alt="image" src="https://github.com/user-attachments/assets/528f0738-83dd-455c-bfd7-166581bf56d3" />
 
+These graphs confirm that R and Q have opposite effects on the controller’s performance. 
+
 
 
 changing prediction horizon
@@ -437,7 +448,8 @@ it is clearly increasing N result in better prediction so decrease ISE and make 
 
 <img width="624" height="615" alt="image" src="https://github.com/user-attachments/assets/5069f0a1-6946-4e21-bf6a-6e5866681d0c" />
 
-| N   | Cost function | ISE      | ISU   |
+Table3:sebsitivity to N
+| N   |  integrate cost | ISE      | ISU   |
 |-----|---------------|----------|-------|
 | 5   | 12.380        | 121.859  | 1.933 |
 | 10  | 8.190         | 78.870   | 3.031 |
@@ -445,10 +457,108 @@ it is clearly increasing N result in better prediction so decrease ISE and make 
 | 50  | 6.856         | 65.346   | 3.211 |
 | 100 | 6.820         | 65.015   | 3.182 |
 
-This table shows that increasing the prediction horizon N
-N from 5 to 10 significantly decreases the ISE (by almost 50%). However, further increasing N
-N from 30 to 100 only improves the ISE by about 2 units. Since a larger horizon also increases computational time and complexity, the best trade-off is achieved around N=30
-. At this point, the ISE is already close to its minimum, while the computational effort remain.
+This table shows that increasing the prediction horizon (N) from 5 to 10 significantly decreases the ISE by about 50 units. However, further increasing N from 30 to 100 only improves the ISE by about 2 units. Since a larger horizon also increases computational time and complexity, the best trade-off is achieved around N = 30. At this point, the ISE is already close to its minimum, while the computational effort remains reasonable. Overall, increasing N results in a decrease in ISE and the cost function, but also an increase in control effort (ISU).
+
+
+Effect of control signal range 
+ --
+ How ever as i know **Inputs (u):**
+- \(delta_r) = Rudder deflection  
+- \(delta_a) = Aileron deflection
+ 
+ and according to some references rang of them is +_15 to +_30
+ 
+ - Aileron: \(\pm 15^\circ \, (0.262 \,\text{rad})\)  
+- Rudder: \(\pm 30^\circ \, (0.524 \,\text{rad})\)  
+
+*Reference:* [NASA Beginner's Guide to Aeronautics](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/learn-about-aerodynamics/#aircraft-motion)
+but i change U to evaluate how it change by it 
+<img width="624" height="615" alt="image" src="https://github.com/user-attachments/assets/42d07aa0-dc8d-466b-87e2-cf208758363d" />
+
+Table4:sebsitivity to control signal
+
+| δa_max, δr_max                |  integrated cost | ISE     | ISU   |
+|--------------------------------|---------------|---------|-------|
+| 0.1                            | 15.93         | 159.08  | 0.1983 |
+| .262 (δa), .524 (δr)             | 7.984         | 78.10   | 1.734 |
+| 1                              | 5.242         | 55.98   | 6.761 |
+| 2                              | 5.838         | 48.6988 | 9.684 |
+| 5                              | 5.836         | 48.6988 | 9.684 |
+
+As is evident, increasing the range of the control signal results in a decrease in the cost function and ISE, but also an increase in control effort (ISU). Beyond a range of approximately −2 ≤ u{k} ≤ 2, the reduction in ISE becomes negligible. Therefore, the optimal maximum control signal for the controller would be in the range of 1 to 2.
+
+
+## Changing the Cost Function
+I  use  cost function of this example in yalmip https://yalmip.github.io/example/standardmpc/ and i modify it for my system
+
+in this use  norm 1  of  wheight of error and control signal instead of norm 2 which was quadratic program 
+
+
+```matlab
+ for k = 1:N
+
+ objective = objective + norm(Q*eror,1) + norm(R*u{k},1);
+ constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
+ constraints = [constraints, -delta_a_max<= u{k}(1) <= delta_a_max ];
+ constraints = [constraints, -delta_r_max <= u{k}(2) <= delta_r_max];
+ 
+ 
+        
+    end
+```
+
+Because the cost function changes, I used a separate Simulink model to compute the cost function for this new formulation.
+the result of it while R=Q=.1 and N=10 and
+delta_a_max = 15*pi/180;% 0.262 rad
+delta_r_max = 30*pi/180;% 0.524 rad
+
+<img width="697" height="556" alt="image" src="https://github.com/user-attachments/assets/73df6ff0-f570-4519-b8b2-abc27d0300da" />
+
+<img width="875" height="556" alt="image" src="https://github.com/user-attachments/assets/25ea5fe1-3fe8-4aeb-a228-315207cddb8c" />
+
+<img width="875" height="556" alt="image" src="https://github.com/user-attachments/assets/086d019f-0427-4fea-83f9-99f57014ab39" />
+
+
+Results
+
+L1-norm cost function:
+
+Integrated cost: 6.07
+
+ISE: 125.76
+
+ISU: 1.044
+
+
+However as we get it previously for norm 2:
+
+Integrated cost: 8.19
+
+ISE: 78.87
+
+ISU: 3.031
+
+
+
+Discussion
+
+The L2-norm results in a higher integrated cost (expected, since it squares errors) but achieves better tracking performance (smaller ISE).
+
+The L1-norm results in smoother control inputs  but worse tracking performance (larger ISE).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
