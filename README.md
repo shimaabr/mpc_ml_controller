@@ -146,7 +146,7 @@ end
 ## MPC controller implementation
 
 YALMIP is used to formulate and solve the online  MPC.  
-I adapted the Simulink YALMIP-MPC example (https://yalmip.github.io/example/simulink/) and selected a fast QP solver / structure to reduce execution time.  
+I adapted the Simulink YALMIP-MPC example   https://yalmip.github.io/example/simulink/ and selected a fast QP solver / structure to reduce execution time.  
 The implementation below is a modify YALMIP-based  MPC controller. In wich it get Q R  state at the moment (current x) refrence(current r) and time and give signal control (uout) to the plant. you can find my code in AC3controller.m 
 
 ```matlab
@@ -229,13 +229,41 @@ end
 
 end
 ```
-at the next step i use yalmip example for simulink how ever change some part to adopt it for my example like indorder to get current x from the state space we set C=eye(nx)
-and D=zeros(nx,nu) so the output of state space is current x then we give current x to mpc controller ,mpc controller also get T for whole of time duration in here 10 and get Q which is weight of error and R which is weight of signal out put mpc controller also get current r or refrence and after state space block we put  multiplay to get y=c*x then with scope we can follow the tracking 
-also for better evaluation i find ISE and ISU and couse we have 4 output and 2 input i sum ISEs and ISUs to define a num for each for better asses in further
-![ISE](https://latex.codecogs.com/svg.latex?\bg_white\ISE=\sum_{k=0}^{N}e^{2}(k))
-![ISU](https://latex.codecogs.com/svg.latex?\bg_white\ISU=\sum_{k=0}^{N}u^{2}(k))
+At the next step, I used a YALMIP example for Simulink; however, I modified some parts to adapt it to my model.  
+To obtain the current state vector `x` from the state-space block, I set:
 
+- `C = eye(nx)`  
+- `D = zeros(nx, nu)`  
 
+so that the output of the state-space block is exactly the current `x`.  
+This `x` is then given to the MPC controller.  
+
+The MPC controller also receives:
+- **T**: prediction horizon (here, 10 steps)  
+- **Q**: weight on the tracking error  
+- **R**: weight on the control signal  
+- **r**: reference input  
+
+After the state-space block, I multiply `y = Cx` to obtain the measured outputs, which are sent to a **scope** to visualize tracking performance.  
+In addition, process disturbances and measurement noise are modeled using **white noise blocks** as shown below:
+
+<img width="800" alt="Simulink model" src="https://github.com/user-attachments/assets/f414008e-e04f-41c4-823a-efe509c577ea" />
+
+---
+
+For performance evaluation, I calculate **ISE** and **ISU**.  
+Since the system has 4 outputs and 2 inputs, I sum the individual ISEs and ISUs to get scalar values for easier comparison:
+
+![ISE](https://latex.codecogs.com/svg.latex?\bg_white ISE=\sum_{k=0}^{N}e^{2}(k))  
+![ISU](https://latex.codecogs.com/svg.latex?\bg_white ISU=\sum_{k=0}^{N}u^{2}(k))  
+
+---
+
+Finally, in the **subsystem block**, I compute the **cost function** using `Q`, `R`, the error, and the control signal according to:
+
+![Cost](https://latex.codecogs.com/svg.latex?\color{white}J_{(0-N)}=x_N^TPx_N+\sum_{k=0}^{N-1}(x_k^TQx_k+u_k^TRu_k))
+
+You can find the full Simulink implementation in **`mpccontroller.slx`**.
     
 
 
