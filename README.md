@@ -254,16 +254,43 @@ In addition, process disturbances and measurement noise are modeled using **whit
 For performance evaluation, I calculate **ISE** and **ISU**.  
 Since the system has 4 outputs and 2 inputs, I sum the individual ISEs and ISUs to get scalar values for easier comparison:
 
-![ISE](https://latex.codecogs.com/svg.latex?\bg_white ISE=\sum_{k=0}^{N}e^{2}(k))  
-![ISU](https://latex.codecogs.com/svg.latex?\bg_white ISU=\sum_{k=0}^{N}u^{2}(k))  
+$ISE = \sum_{k=0}^{N} e^2(k)$
 
----
+$ISU = \sum_{k=0}^{N} u^2(k)$
+
+
 
 Finally, in the **subsystem block**, I compute the **cost function** using `Q`, `R`, the error, and the control signal according to:
 
 ![Cost](https://latex.codecogs.com/svg.latex?\color{white}J_{(0-N)}=x_N^TPx_N+\sum_{k=0}^{N-1}(x_k^TQx_k+u_k^TRu_k))
+<img width="1085" height="428" alt="image" src="https://github.com/user-attachments/assets/5937ce01-c8a0-4840-a700-b7101376e85b" />
+
 
 You can find the full Simulink implementation in **`mpccontroller.slx`**.
+
+-- 
+if you run the simulink you can see 
+for Q=.1 R=.1
+
+<img src="https://github.com/user-attachments/assets/c5e24922-20d8-43fa-b82d-eb8788d7fcc7" width="400" />
+
+<img src="https://github.com/user-attachments/assets/863a3c55-131b-4694-92e6-c9a6604b122a" width="400" />
+
+ost function and error  gradually reduce which show mpc controller done well
+
+<img src="https://github.com/user-attachments/assets/34f1545d-b124-40f2-828d-a8b86f0249a7" width="400" />
+
+<img src="https://github.com/user-attachments/assets/ed5ce072-b5ee-4c66-b9d5-0e21d6c1ce1e" width="400" />
+
+
+cost function and error  gradually reduce which show mpc controller done well
+
+
+
+
+
+
+
     
 
 
