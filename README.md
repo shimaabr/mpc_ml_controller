@@ -286,6 +286,185 @@ ost function and error  gradually reduce which show mpc controller done well
 cost function and error  gradually reduce which show mpc controller done well
 
 
+## sensitivity to parameters
+
+Sensitivity to Q
+--
+changes value of Q while other parameters steady in R=.1 U=delta_a_max = 2;% 0.262 rad
+delta_r_max = 2;% 0.524 rad and N=1
+
+<img width="653" height="594" alt="image" src="https://github.com/user-attachments/assets/1f7ffcde-9220-4776-8336-9c3ddb2d1232" />
+
+as it is obvious increasing Q result in 
+
+the output closely follows the setpoint.
+
+the tracking error is smaller
+
+more aggressive control actions
+
+for better evaluation i make a table to find how error(ISE) and controlsignal (ISU) and cost function change due to changing Q
+
+| R   | Q     | Cost function | ISE     | ISU   |
+|-----|-------|---------------|---------|-------|
+| 0.1 | 0.01  | 1.464         | 142.400 | 0.3998 |
+| 0.1 | 0.025 | 2.669         | 101.092 | 1.417  |
+| 0.1 | 0.05  | 4.365         | 82.500  | 2.401  |
+| 0.1 | 0.075 | 6.254         | 79.538  | 2.890  |
+| 0.1 | 0.1   | 8.190         | 78.870  | 3.031  |
+| 0.1 | 0.2   | 15.990        | 78.360  | 3.199  |
+| 0.1 | 0.5   | 39.560        | 78.460  | 3.317  |
+| 0.1 | 1     | 78.500        | 78.160  | 3.371  |
+| 0.1 | 10    | 781.200       | 78.082  | 3.419  |
+| 0.1 | 100   | 7809.000      | 78.082  | 3.421  |
+
+
+sensitivity to R
+--
+changes value of Q while other parameters steady in Q=.1 U=delta_a_max = 2;% 0.262 rad
+delta_r_max = 2;% 0.524 rad and N=1
+
+<img width="652" height="642" alt="image" src="https://github.com/user-attachments/assets/e509fbaf-7416-48be-afa1-3ca42383f685" />
+
+Increasing R (opposite of Q):
+
+The control inputs change more smoothly and conservatively.
+
+Control effort (or actuator usage) is reduced.
+
+Tracking accuracy decreases
+
+
+| R    | Q   | Cost function | ISE      | ISU    |
+|------|-----|---------------|----------|--------|
+| 0.01 | 0.1 | 7.850         | 78.1644  | 3.371  |
+| 0.05 | 0.1 | 7.996         | 78.3600  | 3.199  |
+| 0.1  | 0.1 | 8.190         | 78.870   | 3.031  |
+| 0.15 | 0.1 | 8.4245        | 80.000   | 2.788  |
+| 0.18 | 0.1 | 8.592         | 81.320   | 2.550  |
+| 0.2  | 0.1 | 8.730         | 82.499   | 2.401  |
+| 0.25 | 0.1 | 9.183         | 86.615   | 2.087  |
+| 0.5  | 0.1 | 11.530        | 109.830  | 1.098  |
+| 1    | 0.1 | 14.640        | 142.411  | 0.3998 |
+| 10   | 0.1 | 20.210        | 201.571  | 0.0052 |
+
+to compare the effect of them better i plot the cost function ISE and ISU according to R and Q in matlab you can find the code in 
+
+```matlab
+R = [.01,.05,.1,.15,.18,.2,.25,.5,1,10]
+CostR = [7.85,7.996,8.19,8.4245,8.592,8.73,9.183,11.53,14.64,20.21]
+ISER = [78.1644,78.3600,78.87,80.0,81.32,82.499,86.615,109.83,142.411,201.571]
+ISUR=[3.371,3.199,3.031,2.788,2.55,2.401,2.087,1.098,.3998,.00523]
+
+
+% cost with changing R
+subplot(3,2,1);
+plot(R,CostR, '-o');
+xlim([0 1]);
+xlabel('R'); ylabel('Cost'); grid on; title('Cost(0-1) ');
+
+subplot(3,2,2);
+plot(R, CostR, '-o');
+xlabel('R'); ylabel('Cost'); grid on; title('Cost (all)');
+
+%ISE with changing R
+subplot(3,2,3);
+plot(R, ISER, '-o');
+xlim([0 1]);
+xlabel('R'); ylabel('ISE'); grid on; title('ISE(0-1) ');
+
+subplot(3,2,4);
+plot(R, ISER, '-o');
+xlabel('R'); ylabel('ISE'); grid on; title('ISE (all)');
+
+%ISU with changing R
+subplot(3,2,5);
+plot(R, ISUR, '-o');
+xlim([0 1]);
+xlabel('R'); ylabel('ISU'); grid on; title('ISU(0-1) ');
+
+subplot(3,2,6);
+plot(R, ISUR, '-o');
+xlabel('R'); ylabel('ISU'); grid on; title('ISU (all)');
+
+%% data for Q 
+Q     = [0.01 0.025 0.05 0.075 0.1 0.2 0.5 1 10 100];
+CostQ = [1.464 2.669 4.365 6.254 8.19 15.99 39.56 78.5 781.2 7809];
+ISEQ  = [142.4 101.092 82.5 79.538 78.87 78.3596 78.46 78.16 78.08161 78.08209];
+ISUQ  = [0.3998 1.417 2.401 2.89 3.031 3.199 3.317 3.371 3.419 3.421];
+
+figure;
+
+% Cost (0-1)
+subplot(3,2,1);
+plot(Q, CostQ, '-o'); xlim([0 1]);
+xlabel('Q'); ylabel('Cost'); grid on; title('Cost (0-1)');
+
+% Cost (all)
+subplot(3,2,2);
+plot(Q, CostQ, '-o');
+xlabel('Q'); ylabel('Cost'); grid on; title('Cost (all)');
+
+% ISE (0-1)
+subplot(3,2,3);
+plot(Q, ISEQ, '-o'); xlim([0 1]);
+xlabel('Q'); ylabel('ISE'); grid on; title('ISE (0-1)');
+
+% ISE (all)
+subplot(3,2,4);
+plot(Q, ISEQ, '-o');
+xlabel('Q'); ylabel('ISE'); grid on; title('ISE (all)');
+
+% ISU (0-1)
+subplot(3,2,5);
+plot(Q, ISUQ, '-o'); xlim([0 1]);
+xlabel('Q'); ylabel('ISU'); grid on; title('ISU (0-1)');
+
+% ISU (all)
+subplot(3,2,6);
+plot(Q, ISUQ, '-o');
+xlabel('Q'); ylabel('ISU'); grid on; title('ISU (all)');
+```
+<img width="546" height="385" alt="image" src="https://github.com/user-attachments/assets/17106122-08c9-4f12-b286-7c2e5267811d" />
+
+<img width="559" height="419" alt="image" src="https://github.com/user-attachments/assets/528f0738-83dd-455c-bfd7-166581bf56d3" />
+
+
+
+changing prediction horizon
+--
+it is clearly increasing N result in better prediction so decrease ISE and make signal control more aggressive
+
+<img width="624" height="615" alt="image" src="https://github.com/user-attachments/assets/5069f0a1-6946-4e21-bf6a-6e5866681d0c" />
+
+| N   | Cost function | ISE      | ISU   |
+|-----|---------------|----------|-------|
+| 5   | 12.380        | 121.859  | 1.933 |
+| 10  | 8.190         | 78.870   | 3.031 |
+| 30  | 7.230         | 67.008   | 3.224 |
+| 50  | 6.856         | 65.346   | 3.211 |
+| 100 | 6.820         | 65.015   | 3.182 |
+
+This table shows that increasing the prediction horizon N
+N from 5 to 10 significantly decreases the ISE (by almost 50%). However, further increasing N
+N from 30 to 100 only improves the ISE by about 2 units. Since a larger horizon also increases computational time and complexity, the best trade-off is achieved around N=30
+. At this point, the ISE is already close to its minimum, while the computational effort remain.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
