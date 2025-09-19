@@ -1,15 +1,11 @@
 #  Aircraft MPC Controller (MATLAB & Simulink)
 
-This project implements an MPC controller for the **L-1011 aircraft** using **YALMIP** (optimization toolbox) and **Simulink**.  
-- The system results are observed using scopes.  
-- The cost function, Integral of Squared Error (ISE), and Integral of Squared Input (ISU) are calculated.  
-- The sensitivity to parameters, constraints, and the cost function is evaluated.  
-
-Ultimately, the MPC controller is compared with an **LQR controller**.  
+This project applies Model Predictive Control (MPC) to the lateral-axis dynamics of the L-1011 aircraft in cruise flight. The controller is implemented in MATLAB/Simulink using the YALMIP optimization toolbox. Its objective is to minimize tracking error while satisfying actuator constraints on the aileron and rudder. System performance is evaluated using Simulink scopes and performance indices such as the Integral of Squared Error (ISE), the Integral of Squared Input (ISU), and the overall cost function.Sensitivity analysis is performed on key tuning parameters—such as weight selection, prediction horizon, and control signal limits—as well as on the cost function, to guide controller optimization.
+  
 
 ---
 
-##  MPC Controller
+## What is MPC Controller
 Model Predictive Control (MPC) is a feedback control algorithm that uses a model to predict future outputs of the process and solves an optimization problem to select the optimal control.
 
 **Advantages of MPC:**  
@@ -57,7 +53,7 @@ I use the [**COMPLIB library**](http://www.complib.de/) to find the state-space 
 <img src="https://github.com/user-attachments/assets/fbab897c-4fad-4a29-a96a-235eaf23ea00" width="400"/>  
 
 
-*Reference:* [NASA Report](https://contrails.library.iit.edu/files/original/253c069aca0f1971c8e1b708576252f2c75363ef.pdf)
+*Reference iamge:* [NASA Report](https://contrails.library.iit.edu/files/original/253c069aca0f1971c8e1b708576252f2c75363ef.pdf)
 
 
 
@@ -71,17 +67,15 @@ State, Input, and Output defined as
 - \(w) = Washout filter state  
 
 **Inputs (u):**
-- \(delta_r) = Rudder deflection  
-- \(delta_a) = Aileron deflection
+- \(delta_r) = Rudder deflection (rad) 
+- \(delta_a) = Aileron deflection (rad)
 
 - 
 
 - <img src="https://github.com/user-attachments/assets/b14f305f-5b27-45af-b8ae-734edeedb400" width="400"/>  
 
-- Aileron: \(\pm 15^\circ \, (0.262 \,\text{rad})\)  
-- Rudder: \(\pm 30^\circ \, (0.524 \,\text{rad})\)  
 
-*Reference:* [NASA Beginner's Guide to Aeronautics](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/learn-about-aerodynamics/#aircraft-motion)
+*Reference iamge:* [NASA Beginner's Guide to Aeronautics](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/learn-about-aerodynamics/#aircraft-motion)
 
 **Outputs (y):**
 - \(r_{wo}) = Washed-out yaw rate  
@@ -141,12 +135,10 @@ end
 
 
 ```
-*Reference:* [NASA NTRS Report 19900007452](https://ntrs.nasa.gov/api/citations/19900007452/downloads/19900007452.pdf)
-
 ## MPC controller implementation
 
 YALMIP is used to formulate and solve the online  MPC.  
-I adapted the Simulink YALMIP-MPC example   https://yalmip.github.io/example/simulink/ and selected a fast QP solver / structure to reduce execution time.  
+I adapted the Simulink YALMIP-MPC example   https://yalmip.github.io/example/simulink/ and selected a fast one to reduce time of computing and complexity.  
 The implementation below is a modify YALMIP-based  MPC controller. In wich it get Q R  state at the moment (current x) refrence(current r) and time and give signal control (uout) to the plant. you can find my code in `ac3mpccontroller.m`
 
 ```matlab
@@ -239,17 +231,20 @@ so that the output of the state-space block is exactly the current `x`.
 This `x` is then given to the MPC controller.  
 
 The MPC controller also receives:
-- **T**: prediction horizon (here, 10 steps)  
-- **Q**: weight on the tracking error  
-- **R**: weight on the control signal  
-- **r**: reference input  
+
+t: the simulation time, implemented using the clock (here with a step size of 10 s)
+
+Q: the weight on the tracking error
+
+R: the weight on the control signal
+
+r: the reference input, which in this case is a square signal
 
 After the state-space block, I multiply `y = Cx` to obtain the measured outputs, which are sent to a **scope** to visualize tracking performance.  
 In addition, process disturbances and measurement noise are modeled using **white noise blocks** as shown below:
 
 <img width="800" alt="Simulink model" src="https://github.com/user-attachments/assets/f414008e-e04f-41c4-823a-efe509c577ea" />
 
----
 
 For performance evaluation, I calculate **ISE** and **ISU**.  
 Since the system has 4 outputs and 2 inputs, I sum the individual ISEs and ISUs to get scalar values for easier comparison:
@@ -277,39 +272,39 @@ for Q=.1 R=.1
 
 <img src="https://github.com/user-attachments/assets/863a3c55-131b-4694-92e6-c9a6604b122a" width="400" />
 
-ost function and error  gradually reduce which show mpc controller done well
+
 
 <img src="https://github.com/user-attachments/assets/34f1545d-b124-40f2-828d-a8b86f0249a7" width="400" />
 
 <img src="https://github.com/user-attachments/assets/ed5ce072-b5ee-4c66-b9d5-0e21d6c1ce1e" width="400" />
 
 
-cost function and error  gradually reduce which show mpc controller done well
-
-
 ## sensitivity to parameters
 
 Sensitivity to Q
 --
-I change value of Q keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
-delta_r_max = 2;% 0.524 rad and N=10
+I change value of Q keeping other parameters constant in R=.1 %% contraints of signal control
+delta_a_max = 15*pi/180;% 0.262 rad
+delta_r_max = 30*pi/180;% 0.524 rad
 
 <img width="653" height="594" alt="image" src="https://github.com/user-attachments/assets/1f7ffcde-9220-4776-8336-9c3ddb2d1232" />
 
-as it is obvious increasing Q result in 
 
-the output closely follows the setpoint.
+As we can see it  increasing Q result in 
+
+
+the output better follows the setpoint.
 
 the tracking error is smaller
 
 more aggressive control actions
 
 
-For a better evaluation, the following table shows how the error (ISE), control signal (ISU), and cost function change as Q varies:
+For a better evaluation, the following table shows how the sum of error (ISE),s control signal (ISU), and cost function change as Q varies:
 
 Table1:sebsitivity to Q 
 
-| R   | Q     | integrated Cost  | ISE     | ISU   |
+| R   | Q     |  Cost function| ISE     | ISU   |
 |-----|-------|---------------|---------|-------|
 | 0.1 | 0.01  | 1.464         | 142.400 | 0.3998 |
 | 0.1 | 0.025 | 2.669         | 101.092 | 1.417  |
@@ -326,7 +321,7 @@ The table illustrates that increasing Q while keeping other parameters constant 
 
 sensitivity to R
 --
-I changes value of Q keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
+I changes value of R keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
 delta_r_max = 2;% 0.524 rad and N=10
 
 <img width="652" height="642" alt="image" src="https://github.com/user-attachments/assets/e509fbaf-7416-48be-afa1-3ca42383f685" />
@@ -341,7 +336,7 @@ Tracking accuracy decreases
 
 Table2:sebsitivity to R
 
-| R    | Q   | integrated Cost  | ISE      | ISU    |
+| R    | Q   | Cost  function| ISE      | ISU    |
 |------|-----|---------------|----------|--------|
 | 0.01 | 0.1 | 7.850         | 78.1644  | 3.371  |
 | 0.05 | 0.1 | 7.996         | 78.3600  | 3.199  |
@@ -439,11 +434,11 @@ xlabel('Q'); ylabel('ISU'); grid on; title('ISU (all)');
 
 <img width="559" height="419" alt="image" src="https://github.com/user-attachments/assets/528f0738-83dd-455c-bfd7-166581bf56d3" />
 
-These graphs confirm that R and Q have opposite effects on the controller’s performance. 
+These graphs confirm that R and Q have opposite effects on the controller’s performance.WHile increasing both result in increasing cost function.
 
 
 
-changing prediction horizon
+Sensitivity to prediction horizon
 --
 it is clearly increasing N result in better prediction so decrease ISE and make signal control more aggressive
 
@@ -463,22 +458,21 @@ This table shows that increasing the prediction horizon (N) from 5 to 10 signifi
 
 Effect of control signal range 
  --
- How ever as i know **Inputs (u):**
+**Inputs (u) are :**
 - \(delta_r) = Rudder deflection  
 - \(delta_a) = Aileron deflection
- 
- and according to some references rang of them is +_15 to +_30
- 
- - Aileron: \(\pm 15^\circ \, (0.262 \,\text{rad})\)  
-- Rudder: \(\pm 30^\circ \, (0.524 \,\text{rad})\)  
+- 
+ For the flight dynamics model, the following control surface deflection ranges are assumed:
 
-*Reference:* [NASA Beginner's Guide to Aeronautics](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/learn-about-aerodynamics/#aircraft-motion)
-but i change U to evaluate how it change by it 
+- **Aileron**: ±15° (±0.262 rad)
+- **Rudder**: ±30° (±0.524 rad)
+
+In the simulation, I also varied these inputs to see how the system responds. This is only for testing purposes; in reality, the inputs are limited by the physical actuator ranges.
 <img width="624" height="615" alt="image" src="https://github.com/user-attachments/assets/42d07aa0-dc8d-466b-87e2-cf208758363d" />
 
 Table4:sebsitivity to control signal
 
-| δa_max, δr_max                |  integrated cost | ISE     | ISU   |
+| δa_max, δr_max                |  cost function| ISE     | ISU   |
 |--------------------------------|---------------|---------|-------|
 | 0.1                            | 15.93         | 159.08  | 0.1983 |
 | .262 (δa), .524 (δr)             | 7.984         | 78.10   | 1.734 |
@@ -541,9 +535,8 @@ ISU: 3.031
 
 
 
-Discussion
 
-The L2-norm results in a higher integrated cost (expected, since it squares errors) but achieves better tracking performance (smaller ISE).
+It si conclute that, The L2-norm results in a higher integrated cost (expected, since it squares errors) but achieves better tracking performance (smaller ISE).
 
 The L1-norm results in smoother control inputs  but worse tracking performance (larger ISE).
 
@@ -566,9 +559,6 @@ Q and R around 0.1
 
 With these choices, MPC shows better performance.
 
-<img src="https://github.com/user-attachments/assets/9b72081a-0f99-4b98-8f1a-667392eca28b" alt="figure1" width="400" />
-
-<img src="https://github.com/user-attachments/assets/60830045-da65-481c-b2ae-2c76ed58b3ac" alt="figure2" width="400" />
 
 
 
