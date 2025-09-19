@@ -135,7 +135,7 @@ end
 YALMIP is used to formulate and solve the online MPC.
 I adapted the Simulink YALMIP-MPC example here
  and selected a fast version to reduce computation time and complexity. I then modified and added some parts to fit my project. 
-### MPC controller matlab code with yalmip
+### MPC controller code with yalmip
 You can find the MPC controller code for L1011 in ac3mpccontroller.m. Further information and explanations are provided in the comments within the code. This code is designed to take the following inputs:R Q (weights as scaler )and t(simulation time)and current x and current r and the out put is uout
 
 ```matlab
@@ -219,7 +219,7 @@ end
 end
 ```
 
-### matlab simulink for MPC controller
+###  Implement MPC controller in simulink
 
 I used yalmip simulink  however, I modified some parts to adapt it to my model.  
 To obtain the current state vector `x` from the state-space block, I set:
