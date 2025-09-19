@@ -564,7 +564,7 @@ N between 30 and 50
 
 Q and R around 0.1
 
-With these choices, MPC shows good performance and improves the system.
+With these choices, MPC shows better performance.
 
 <img src="https://github.com/user-attachments/assets/9b72081a-0f99-4b98-8f1a-667392eca28b" alt="figure1" width="400" />
 
@@ -572,18 +572,3 @@ With these choices, MPC shows good performance and improves the system.
 
 
 
----
-
-## ⚙️ Requirements
-- MATLAB R202x (recommended: 2022 or later)  
-- Simulink  
-- [YALMIP](https://yalmip.github.io/) (only for the YALMIP-based MPC)  
-- An optimization solver (e.g., `quadprog`, `gurobi`)  
-
----
-
-## 🚀 How to Run
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/username/aircraft-mpc-controller.git
-   cd aircraft-mpc-controller
