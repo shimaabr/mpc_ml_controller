@@ -83,11 +83,6 @@ State, Input, and Output defined as
 - \(beta) = Sideslip angle  
 - \(phi) = Bank angle  
 
-
-
---
-
-###  MATLAB Implementation
 I extract the A, B, and C matrices from COMPLIB and put them in `plantac3.m`. Then I define a plant with these parameters and evaluate whether this system is controllable or not using the Kalman test.
 
 ```matlab
@@ -137,12 +132,14 @@ end
 ```
 ## MPC controller implementation
 
-YALMIP is used to formulate and solve the online  MPC.  
-I adapted the Simulink YALMIP-MPC example   https://yalmip.github.io/example/simulink/ and selected a fast one to reduce time of computing and complexity.  
-The implementation below is a modify YALMIP-based  MPC controller. In wich it get Q R  state at the moment (current x) refrence(current r) and time and give signal control (uout) to the plant. you can find my code in `ac3mpccontroller.m`
+YALMIP is used to formulate and solve the online MPC.
+I adapted the Simulink YALMIP-MPC example here
+ and selected a fast version to reduce computation time and complexity. I then modified and added some parts to fit my project. 
+### MPC controller matlab code with yalmip
+You can find the MPC controller code for L1011 in ac3mpccontroller.m. Further information and explanations are provided in the comments within the code. This code is designed to take the following inputs:R Q (weights as scaler )and t(simulation time)and current x and current r and the out put is uout
 
 ```matlab
-function uout= ac18controller(currentx,currentr,t,Q,R,N)
+function uout= ac18controller(currentx,currentr,t,Q,R)
 persistent Controller  % Store optimizer object across function calls
 
 if t == 0 
@@ -221,7 +218,10 @@ end
 
 end
 ```
-At the next step, I used a YALMIP example for Simulink; however, I modified some parts to adapt it to my model.  
+
+### matlab simulink for MPC controller
+
+I used yalmip simulink  however, I modified some parts to adapt it to my model.  
 To obtain the current state vector `x` from the state-space block, I set:
 
 - `C = eye(nx)`  
@@ -281,7 +281,7 @@ for Q=.1 R=.1
 
 ## sensitivity to parameters
 
-Sensitivity to Q
+###Sensitivity to Q
 --
 I change value of Q keeping other parameters constant in R=.1 %% contraints of signal control
 delta_a_max = 15*pi/180;% 0.262 rad
@@ -319,7 +319,7 @@ Table1:sebsitivity to Q
 
 The table illustrates that increasing Q while keeping other parameters constant results in a significant decrease in ISE, which is beneficial for the controller’s performance. However, after Q ≈ 0.1, further increases in Q have only a minor effect on reducing ISE, while the cost function and ISU rise sharply. Therefore, the optimal value of Q for this model would be around 0.075–0.1.
 
-sensitivity to R
+### sensitivity to R
 --
 I changes value of R keeping other parameters constant in R=.1 U=delta_a_max = 2;% 0.262 rad
 delta_r_max = 2;% 0.524 rad and N=10
@@ -351,7 +351,7 @@ Table2:sebsitivity to R
 
 The table illustrates that increasing R while keeping other parameters constant results in a significant increase in ISE, which may have bad effect on the controller’s performance. On the other hand, the control effort decreases and becomes smoother, while the cost function increases. Therefore, it is preferable to choose the largest R that still maintains an acceptable ISE, which for this model would be around R ≈ 0.1.
 
-plot the effect of weights
+#### Comparing the Effects of Q and R on Performance
 --
 To better compare the effects of Q and R, the cost function, ISE, and ISU were plotted against R and Q in MATLAB. The code can be found at `tuningQR.m` .
 
@@ -438,7 +438,7 @@ These graphs confirm that R and Q have opposite effects on the controller’s pe
 
 
 
-Sensitivity to prediction horizon
+###Sensitivity to prediction horizon
 --
 it is clearly increasing N result in better prediction so decrease ISE and make signal control more aggressive
 
@@ -456,7 +456,7 @@ Table3:sebsitivity to N
 This table shows that increasing the prediction horizon (N) from 5 to 10 significantly decreases the ISE by about 50 units. However, further increasing N from 30 to 100 only improves the ISE by about 2 units. Since a larger horizon also increases computational time and complexity, the best trade-off is achieved around N = 30. At this point, the ISE is already close to its minimum, while the computational effort remains reasonable. Overall, increasing N results in a decrease in ISE and the cost function, but also an increase in control effort (ISU).
 
 
-Effect of control signal range 
+##Effect of control signal range 
  --
 **Inputs (u) are :**
 - \(delta_r) = Rudder deflection  
@@ -558,6 +558,8 @@ N between 30 and 50
 Q and R around 0.1
 
 With these choices, MPC shows better performance.
+
+
 
 
 
