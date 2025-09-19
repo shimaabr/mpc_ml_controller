@@ -559,6 +559,11 @@ Q and R around 0.1
 
 With these choices, MPC shows better performance.
 
+# How to Run
+
+This project is fully implemented in MATLAB/Simulink.  
+To run the simulation: First, run `plantac3.m` in MATLAB.   Then, open and run the Simulinks , since it depends on some variables defined in `plantac3.m`.
+
 
 
 
