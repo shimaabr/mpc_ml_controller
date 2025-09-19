@@ -43,7 +43,7 @@ Because the cost function is quadratic, it is convex, so it has a unique global 
 
 ---
 
-##  Find Model for MPC (L-1011)
+##  Model of project
 
 I use the [**COMPLIB library**](http://www.complib.de/) to find the state-space matrices of my system.  
 
