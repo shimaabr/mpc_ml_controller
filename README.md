@@ -93,7 +93,7 @@ State, Input, and Output defined as
 
 --
 
-### ⚙ MATLAB Implementation
+###  MATLAB Implementation
 I extract the A, B, and C matrices from COMPLIB and put them in `plantac3.m`. Then I define a plant with these parameters and evaluate whether this system is controllable or not using the Kalman test.
 
 ```matlab
