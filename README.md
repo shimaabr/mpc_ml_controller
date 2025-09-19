@@ -483,7 +483,7 @@ Table4:sebsitivity to control signal
 As is evident, increasing the range of the control signal results in a decrease in the cost function and ISE, but also an increase in control effort (ISU). Beyond a range of approximately −2 ≤ u{k} ≤ 2, the reduction in ISE becomes negligible. Therefore, the optimal maximum control signal for the controller would be in the range of 1 to 2.
 
 
-## Changing the Cost Function
+## Changing the Cost Function formula
 I  use  cost function of this example in yalmip https://yalmip.github.io/example/standardmpc/ and i modify it for my system
 
 in this use  norm 1  of  wheight of error and control signal instead of norm 2 which was quadratic program 
