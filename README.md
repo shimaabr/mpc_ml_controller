@@ -147,7 +147,7 @@ end
 
 YALMIP is used to formulate and solve the online  MPC.  
 I adapted the Simulink YALMIP-MPC example   https://yalmip.github.io/example/simulink/ and selected a fast QP solver / structure to reduce execution time.  
-The implementation below is a modify YALMIP-based  MPC controller. In wich it get Q R  state at the moment (current x) refrence(current r) and time and give signal control (uout) to the plant. you can find my code in AC3controller.m 
+The implementation below is a modify YALMIP-based  MPC controller. In wich it get Q R  state at the moment (current x) refrence(current r) and time and give signal control (uout) to the plant. you can find my code in `ac3mpccontroller.m`
 
 ```matlab
 function uout= ac18controller(currentx,currentr,t,Q,R,N)
@@ -358,7 +358,7 @@ The table illustrates that increasing R while keeping other parameters constant 
 
 plot the effect of weights
 --
-To better compare the effects of Q and R, the cost function, ISE, and ISU were plotted against R and Q in MATLAB. The code can be found at  .
+To better compare the effects of Q and R, the cost function, ISE, and ISU were plotted against R and Q in MATLAB. The code can be found at `tuningQR.m` .
 
 ```matlab
 R = [.01,.05,.1,.15,.18,.2,.25,.5,1,10]
@@ -508,7 +508,7 @@ in this use  norm 1  of  wheight of error and control signal instead of norm 2 w
     end
 ```
 
-Because the cost function changes, I used a separate Simulink model to compute the cost function for this new formulation.
+Because the cost function changes, I used a separate Simulink model to compute the cost function for this new formulation in `simulinknorm1.slx`.
 the result of it while R=Q=.1 and N=10 and
 delta_a_max = 15*pi/180;% 0.262 rad
 delta_r_max = 30*pi/180;% 0.524 rad
