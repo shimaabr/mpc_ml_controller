@@ -281,7 +281,7 @@ for Q=.1 R=.1
 
 ## sensitivity to parameters
 
-###Sensitivity to Q
+### Sensitivity to Q
 --
 I change value of Q keeping other parameters constant in R=.1 %% contraints of signal control
 delta_a_max = 15*pi/180;% 0.262 rad
@@ -438,7 +438,7 @@ These graphs confirm that R and Q have opposite effects on the controller’s pe
 
 
 
-###Sensitivity to prediction horizon
+### Sensitivity to prediction horizon
 --
 it is clearly increasing N result in better prediction so decrease ISE and make signal control more aggressive
 
@@ -456,7 +456,7 @@ Table3:sebsitivity to N
 This table shows that increasing the prediction horizon (N) from 5 to 10 significantly decreases the ISE by about 50 units. However, further increasing N from 30 to 100 only improves the ISE by about 2 units. Since a larger horizon also increases computational time and complexity, the best trade-off is achieved around N = 30. At this point, the ISE is already close to its minimum, while the computational effort remains reasonable. Overall, increasing N results in a decrease in ISE and the cost function, but also an increase in control effort (ISU).
 
 
-##Effect of control signal range 
+### Sensitivity to control signal range 
  --
 **Inputs (u) are :**
 - \(delta_r) = Rudder deflection  
@@ -541,7 +541,7 @@ It si conclute that, The L2-norm results in a higher integrated cost (expected, 
 The L1-norm results in smoother control inputs  but worse tracking performance (larger ISE).
 
 
-##Conclusion
+## Conclusion
 --
 MPC controller uses a model of the plant to reduce error and make the system follow the path better. From the results we see that cost function and error get smaller step by step, so the system can reach the setpoint more closely.
 
