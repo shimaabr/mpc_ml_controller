@@ -572,53 +572,6 @@ With these choices, MPC shows good performance and improves the system.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-## 📂 Project Structure
-- `src/` → MATLAB source code  
-  - `mpc_yalmip.m` → MPC implementation with YALMIP  
-  - `mpc_nominal.m` → MPC implementation without YALMIP  
-  - `utils/` → helper functions  
-- `simulink/` → Simulink models for aircraft and MPC  
-- `results/` → Simulation outputs (plots, logs)  
-- `docs/` → Additional documentation (e.g., report, notes)  
-- `README.md` → Project description  
-- `LICENSE` → License file  
-
 ---
 
 ## ⚙️ Requirements
