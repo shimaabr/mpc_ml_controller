@@ -93,7 +93,7 @@ State, Input, and Output defined as
 
 --
 
-### ⚙️ MATLAB Implementation
+### ⚙ MATLAB Implementation
 I extract the A, B, and C matrices from COMPLIB and put them in `plantac3.m`. Then I define a plant with these parameters and evaluate whether this system is controllable or not using the Kalman test.
 
 ```matlab
@@ -263,7 +263,8 @@ $ISU = \sum_{k=0}^{N} u^2(k)$
 Finally, in the **subsystem block**, I compute the  integrate of ** cost function** using `Q`, `R`, the error, and the control signal according to:
 
 ![Cost](https://latex.codecogs.com/svg.latex?\color{white}J_{(0-N)}=x_N^TPx_N+\sum_{k=0}^{N-1}(x_k^TQx_k+u_k^TRu_k))
-<img width="1085" height="428" alt="image" src="https://github.com/user-attachments/assets/5937ce01-c8a0-4840-a700-b7101376e85b" />
+
+<img src="https://github.com/user-attachments/assets/5937ce01-c8a0-4840-a700-b7101376e85b" alt="figure4" width="600" />
 
 
 You can find the full Simulink implementation in **`mpccontroller.slx`**.
@@ -512,11 +513,11 @@ the result of it while R=Q=.1 and N=10 and
 delta_a_max = 15*pi/180;% 0.262 rad
 delta_r_max = 30*pi/180;% 0.524 rad
 
-<img width="697" height="556" alt="image" src="https://github.com/user-attachments/assets/73df6ff0-f570-4519-b8b2-abc27d0300da" />
+<img src="https://github.com/user-attachments/assets/73df6ff0-f570-4519-b8b2-abc27d0300da" alt="figure1" width="400" />
 
-<img width="875" height="556" alt="image" src="https://github.com/user-attachments/assets/25ea5fe1-3fe8-4aeb-a228-315207cddb8c" />
+<img src="https://github.com/user-attachments/assets/25ea5fe1-3fe8-4aeb-a228-315207cddb8c" alt="figure2" width="400" />
 
-<img width="875" height="556" alt="image" src="https://github.com/user-attachments/assets/086d019f-0427-4fea-83f9-99f57014ab39" />
+<img src="https://github.com/user-attachments/assets/086d019f-0427-4fea-83f9-99f57014ab39" alt="figure3" width="400" />
 
 
 Results
@@ -545,6 +546,29 @@ Discussion
 The L2-norm results in a higher integrated cost (expected, since it squares errors) but achieves better tracking performance (smaller ISE).
 
 The L1-norm results in smoother control inputs  but worse tracking performance (larger ISE).
+
+
+##Conclusion
+--
+MPC controller uses a model of the plant to reduce error and make the system follow the path better. From the results we see that cost function and error get smaller step by step, so the system can reach the setpoint more closely.
+
+But if the model is not correct, or parameters are chosen wrong, or constraints are too hard, the controller may not work well. In this project we see that increasing Q, N, and the range of U can reduce error, but also make the control signal larger. On the other hand, increasing R makes the error bigger but control input becomes smoother and smaller.
+
+When we compare L1-norm and L2-norm cost functions, the quadratic one (L2) gives better tracking, because it reduces ISE more.
+
+From tests, the best values are:
+
+U between ±1 and ±2
+
+N between 30 and 50
+
+Q and R around 0.1
+
+With these choices, MPC shows good performance and improves the system.
+
+<img src="https://github.com/user-attachments/assets/9b72081a-0f99-4b98-8f1a-667392eca28b" alt="figure1" width="400" />
+
+<img src="https://github.com/user-attachments/assets/60830045-da65-481c-b2ae-2c76ed58b3ac" alt="figure2" width="400" />
 
 
 
