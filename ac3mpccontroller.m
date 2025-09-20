@@ -1,5 +1,5 @@
 
-function uout= ac18controller(currentx,currentr,t,Q,R,N)
+function uout= ac18controller(currentx,currentr,t,Q,R)
 persistent Controller  % Store optimizer object across function calls
 
 if t == 0 
@@ -82,3 +82,4 @@ else
 end
 
 end
+
